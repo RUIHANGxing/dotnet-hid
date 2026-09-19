@@ -1,0 +1,14 @@
+# Visual Studio / .NET 的编译产物，不需要进版本库
+bin/
+obj/
+.vs/
+*.user
+*.suo
+
+# 构建出来的可执行文件
+*.exe
+*.dll
+*.pdb
+
+# 临时文件
+*.log

@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    这是"项目文件"（C# 项目的说明书）。Visual Studio 和命令行 dotnet 读的是同一个文件，
+    所以两条路径（VS 里按 F5 / 命令行 dotnet run）编译出来的东西完全一样。
+
+    面试式总结：.csproj 决定"用什么框架、怎么编译、产出什么"。
+  -->
+  <PropertyGroup>
+    <!-- 产出物类型：Exe = 可执行的控制台程序 -->
+    <OutputType>Exe</OutputType>
+
+    <!-- 目标框架：net10.0 表示跑在 .NET 10 上（本机已安装 SDK 10.0.400） -->
+    <TargetFramework>net10.0</TargetFramework>
+
+    <!-- 隐式 using 关掉：初学时能清楚看到每个文件真正引用了哪些命名空间 -->
+    <ImplicitUsings>disable</ImplicitUsings>
+
+    <!-- 可空引用类型检查关掉：先专注协议本身，少被编译器警告分散注意力 -->
+    <Nullable>disable</Nullable>
+
+    <LangVersion>latest</LangVersion>
+    <AssemblyName>TouchProbe</AssemblyName>
+    <RootNamespace>TouchProbe</RootNamespace>
+
+    <!-- 我们要输出中文，不能启用"固定区域性" -->
+    <InvariantGlobalization>false</InvariantGlobalization>
+
+    <!-- 汇编信息（可选，只是让产出的 exe 带一点说明） -->
+    <Product>TouchProbe — 用触摸板学 HID 协议</Product>
+    <Description>读取并解析 HID 报告描述符与输入报告的教学工具</Description>
+  </PropertyGroup>
+
+</Project>
