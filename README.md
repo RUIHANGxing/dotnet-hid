@@ -9,6 +9,24 @@ Windows 把它包装成标准 HID 设备暴露出来，我们就用这层"看得
 滑动手指  →  设备上报一包 30 字节的原始数据  →  我们自己按位解码  →  屏幕上的触点坐标
 ```
 
+> 📖 **第一次来？先看 [docs/00-使用手册.md](docs/00-使用手册.md)** —— 从装环境、每条命令怎么用、
+> 输出怎么读、出错怎么修，全都一步步写好了。下面是速览版。
+
+## 3 分钟上手
+
+```powershell
+git clone git@github.com:RUIHANGxing/dotnet-hid.git
+cd dotnet-hid
+
+dotnet build                                                             # ① 编译（期望 0 警告 0 错误）
+dotnet run --project src/TouchProbe -- list                              # ② 看电脑里有哪些 HID 设备
+dotnet run --project src/TouchProbe -- caps                              # ③ 读懂触摸板的协议结构
+dotnet run --project src/TouchProbe -- parse                             # ④ 用自研解析器解析描述符字节
+dotnet run --project src/TouchProbe -- watch --mouse --plain --verify     # ⑤ 实时解码（然后动一下鼠标，Ctrl+C 退出）
+```
+
+想用 Visual Studio：双击 `IicTouch.sln` → F5（默认跑 `watch`；换命令填到"项目属性 → 调试 → 命令行参数"）。
+
 ## 这个项目能学到什么
 
 | 主题 | 在哪里体现 |
@@ -121,10 +139,24 @@ src/TouchProbe/
   Descriptor/*.cs            字节级描述符解析器 + 两个带注释的教学示例
   View/ConsoleUi.cs          控制台表格、十六进制排版、字符地图
 docs/
+  00-使用手册.md             ★ 从装环境到每条命令、输出怎么读、出错怎么修（最详细的一篇）
   01-HID协议基础.md          先读这篇：HID 是什么、Windows 怎么分层、为什么拿不到原始描述符
   02-报告描述符详解.md        描述符的字节级规则 + 逐条练习
-  03-代码导读与C#要点.md      零基础也能读的代码说明 + C# 语法点 + 结构体标定方法
+  03-代码导读与C#要点.md      零基础也能读的代码说明 + C# 语法点 + 结构体标定方法 + Task 学习路线
 ```
+
+## 关于注释与文档
+
+这个项目是按"**当读者什么都不知道**"的标准写的：
+
+- **每个代码文件开头**都有一段"【本文件是什么】"，先讲这个文件在整个流程里负责什么；
+- **关键语法点和坑都在代码里现场解释**：`[DllImport]` / `[StructLayout]` / `ByValArray`（P/Invoke 与结构体布局）、
+  `Marshal.AllocHGlobal`（非托管内存）、位运算与补码、`IDisposable/using`、`Task/Channel/CancellationToken`、
+  `RAWMOUSE` 的内存偏移、结构体尺寸实测标定的全过程……不用另外查资料；
+- **每个"为什么这样做"都写了理由**：比如"为什么用下标循环而不是 foreach"（`ref` 参数不能传 foreach 变量）、
+  "为什么异步里不能 `Thread.Sleep`"、"为什么窗口必须在生产者线程里创建"。
+
+读代码的建议顺序：`Program.cs`（流程）→ `Hid/HidDeviceEnumerator.cs`（找设备）→ `Hid/HidCaps.cs` +`Hid/ReportLayout.cs`（读协议、算位布局）→ `Hid/RawInputReader.cs`（取数据）→ `Hid/ReportPipeline.cs`（Task 异步）。
 
 ## 下一步可以做什么
 
